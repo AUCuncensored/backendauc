@@ -1,21 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import os
-import re
-import tweepy  # Import the tweepy library
-from PIL import Image, ImageDraw, ImageFont
-import uuid  # For generating unique filenames
+import tweepy
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS for all routes
-
-# Define the path to the log file
-LOG_FILE_PATH = 'messages.log'  # You can change the file name as needed
-IMAGE_STORAGE_PATH = 'generated_images'  # Directory to save images
-
-# Ensure the image storage directory exists
-if not os.path.exists(IMAGE_STORAGE_PATH):
-    os.makedirs(IMAGE_STORAGE_PATH)
+CORS(app)  # Allow all origins for simplicity; restrict this in production.
 
 # Twitter API credentials
 TWITTER_API_KEY = 'S64ujlogShQJwuuAgwaxVymwR'
@@ -33,6 +22,8 @@ client = tweepy.Client(
     TWITTER_ACCESS_TOKEN_SECRET
 )
 
+LOG_FILE_PATH = 'messages.log'  # Define your log file path
+
 def log_message(message, ip_address, user_agent, year, major):
     """Append the message, IP, and user-agent to a log file."""
     with open(LOG_FILE_PATH, 'a') as log_file:
@@ -42,7 +33,6 @@ def log_message(message, ip_address, user_agent, year, major):
         log_file.write(f'Year: {year}\n')  # Log the year
         log_file.write(f'Major: {major}\n')  # Log the major
         log_file.write('-----------------------------------\n')
-
 
 @app.route('/api/messages', methods=['POST'])
 def receive_message():
@@ -59,9 +49,9 @@ def receive_message():
         log_message(message, ip_address, user_agent, year, major)  # Log the message, year, and major
         print(f"Received message: {message}, Year: {year}, Major: {major}")
 
-        # Generate an image
-        image_path = create_image(message, year, major)
-        print(f"Image saved as {image_path}")
+        # Generate an image if necessary (optional step)
+        # image_path = create_image(message, year, major)
+        # print(f"Image saved as {image_path}")
 
         # Post to Twitter (only text)
         try:
@@ -79,4 +69,4 @@ if __name__ == '__main__':
     # Ensure the log file exists
     if not os.path.exists(LOG_FILE_PATH):
         open(LOG_FILE_PATH, 'w').close()
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 5000)), debug=True)
