@@ -1,0 +1,9 @@
+version: 1
+services:
+  - type: web
+    name: aucfree  # Replace with a name for your service
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /
+    autoDeploy: true
