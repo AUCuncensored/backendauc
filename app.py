@@ -158,4 +158,4 @@ if __name__ == '__main__':
     # Ensure the log file exists
     if not os.path.exists(LOG_FILE_PATH):
         open(LOG_FILE_PATH, 'w').close()
-    app.run(debug=True)
+    app.run()
