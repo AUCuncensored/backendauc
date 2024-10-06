@@ -33,6 +33,16 @@ client = tweepy.Client(
     TWITTER_ACCESS_TOKEN_SECRET
 )
 
+def log_message(message, ip_address, user_agent, year, major):
+    """Append the message, IP, and user-agent to a log file."""
+    with open(LOG_FILE_PATH, 'a') as log_file:
+        log_file.write(f'Message: {message}\n')
+        log_file.write(f'IP Address: {ip_address}\n')
+        log_file.write(f'User-Agent: {user_agent}\n')
+        log_file.write(f'Year: {year}\n')  # Log the year
+        log_file.write(f'Major: {major}\n')  # Log the major
+        log_file.write('-----------------------------------\n')
+
 
 def create_image(message, year, major):
     """Create an image with the given message, year, and major."""
